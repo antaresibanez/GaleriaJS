@@ -13,7 +13,9 @@ var pg = {
 	//captura el id del div creado en el método "lightbox"
 	lightbox: null,
 	//capturamos el div #modal dentro del lightbox
-	modal: null
+	modal: null,
+	//propiedad que selecciona el tipo de animacioń de aparición de la ventana modal
+	animacionGaleria: "fade"
 }
 
 
@@ -69,20 +71,95 @@ var mg = {
 
 		pg.modal.style.display = "block";
 		pg.modal.style.position = "relative";
-		pg.modal.style.width = "60%";
-		pg.modal.style.top = "50%";
-		pg.modal.style.left = "50%";
-	
+
 		//para que la imagen se adapte al 100% de la caga modal, antes capturar y de ajustar los márgenes de pg.modal
 		pg.modal.childNodes[0].style.width = "100%";
 	    pg.modal.childNodes[0].style.border = '15px solid white'
+
+		//condicional que llama a la propiedad window.matchMedia para verificar si la resolucion del dispositivo
+		// es de mas de 1000px, en caso menor aplicamos un width del 90%, en caso mayor, lo dejamos en 60%
+		if (window.matchMedia("(max-width:1000px)").matches){
+			pg.modal.style.width = "90%";
+		}else{
+
+			pg.modal.style.width = "60%";
+		}
+		
+		//Estilizo pg.modal con animación, va metido en un condicional por si quiero elegir distintos efectos
+		// slideLeft, slideTop o fade
+		if (pg.animacionGaleria == "slideLeft") {
+
+			pg.modal.style.top = "50%";
+			pg.modal.style.left = 0;
+			pg.modal.style.opacity = 0;
+
+			setTimeout(function(){
+
+				pg.modal.style.transition = ".5s left ease";
+				pg.modal.style.left = "50%";
+				pg.modal.style.opacity = 1;
+				//.childeNodes pregunta por los hijos de pgmodal, le dice que hay una imagen
+				// como es un array, le pregunto por el índice  "0" "[0]"
+				//tomo el with de la imagen y lo divido por dos para poder centrar la imagen (- negativo para que se corra izq)
+	    		pg.modal.style.marginLeft = -pg.modal.childNodes[0].width/2 + "px";
+	    		//lo miso pero para el alto
+	   			 pg.modal.style.marginTop = -pg.modal.childNodes[0].height/2 + "px";
+
+
+			},50)
+
+		}
+
+		if (pg.animacionGaleria == "slideTop") {
+
+			pg.modal.style.top = "-100%";
+			pg.modal.style.left = "50%";
+			pg.modal.style.opacity = 0;
+
+			setTimeout(function(){
+
+				pg.modal.style.transition = ".5s top ease";
+				pg.modal.style.top = "50%";
+				pg.modal.style.opacity = 1;
+				//.childeNodes pregunta por los hijos de pgmodal, le dice que hay una imagen
+				// como es un array, le pregunto por el índice  "0" "[0]"
+				//tomo el with de la imagen y lo divido por dos para poder centrar la imagen (- negativo para que se corra izq)
+	    		pg.modal.style.marginLeft = -pg.modal.childNodes[0].width/2 + "px";
+	    		//lo miso pero para el alto
+	   			 pg.modal.style.marginTop = -pg.modal.childNodes[0].height/2 + "px";
+
+
+			},50)
+
+		}
+
+		if (pg.animacionGaleria == "fade") {
+
+			pg.modal.style.top = "-50%";
+			pg.modal.style.left = "50%";
+			pg.modal.style.opacity = 0;
+
+			setTimeout(function(){
+
+				pg.modal.style.transition = ".5s opacity ease";
+				pg.modal.style.top = "50%";
+				pg.modal.style.opacity = 1;
+				//.childeNodes pregunta por los hijos de pgmodal, le dice que hay una imagen
+				// como es un array, le pregunto por el índice  "0" "[0]"
+				//tomo el with de la imagen y lo divido por dos para poder centrar la imagen (- negativo para que se corra izq)
+	    		pg.modal.style.marginLeft = -pg.modal.childNodes[0].width/2 + "px";
+	    		//lo miso pero para el alto
+	   			 pg.modal.style.marginTop = -pg.modal.childNodes[0].height/2 + "px";
+
+
+			},50)
+
+		}
+		
 	
-		//.childeNodes pregunta por los hijos de pgmodal, le dice que hay una imagen
-		// como es un array, le pregunto por el índice  "0" "[0]"
-		//tomo el with de la imagen y lo divido por dos para poder centrar la imagen (- negativo para que se corra izq)
-	    pg.modal.style.marginLeft = -pg.modal.childNodes[0].width/2 + "px";
-	    //lo miso pero para el alto
-	    pg.modal.style.marginTop = -pg.modal.childNodes[0].height/2 + "px";
+		
+	
+		
 
 	    
 	    //el segundo hijo de pg.modal es el div de la "X" [1]
@@ -98,11 +175,11 @@ var mg = {
    	    pg.modal.childNodes[1].style.background = 'white';
    	    pg.modal.childNodes[1].style.borderRadius = '0px 0px 0px 5px';
 
-
+   	    //selecciono la X para llamar al método mg.salir galeria
    	    pg.modal.childNodes[1].addEventListener("click", mg.salirGaleria);
 
 	},
-
+	//método para hacer desaparecer el lightbox
 	salirGaleria: function(){
 		// aqui llamamos al body "parentNode", y le decimos que remueva un hijo que está ubicado en pg.lightbox
 		pg.lightbox.parentNode.removeChild(pg.lightbox);
